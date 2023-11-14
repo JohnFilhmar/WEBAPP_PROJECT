@@ -1,0 +1,49 @@
+body {
+    background-image: url('your-background-image.jpg');
+    background-size: cover;
+    background-position: center;
+    color: #fff;
+}
+
+.container {
+    margin-top: 100px;
+}
+
+.card {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background-color: #007bff;
+    color: #fff;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.form-control {
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: 1px solid #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border: 1px solid #0056b3;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border: 1px solid #28a745;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    border: 1px solid #218838;
+}
