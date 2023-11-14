@@ -8,18 +8,20 @@ class UserController extends Controller {
     }
 
     public function logForm() {
-        if(!$this->session->userdata('isLoggedIn')){
+        $this->session->set_userdata('isLoggedIn', false);
+        if($this->session->userdata('isLoggedIn') == false){
             $this->call->view('login');
         } else {
-            return redirect('');
+            $this->call->view('dashboard');
         }
     }
 
     public function regForm() {
-        if(!$this->session->userdata('isLoggedIn')){
+        $this->session->set_userdata('isLoggedIn', false);
+        if($this->session->userdata('isLoggedIn') == false){
             $this->call->view('register');
         } else {
-            return redirect('');
+            $this->call->view('dashboard');
         }
     }
 
@@ -33,27 +35,26 @@ class UserController extends Controller {
 
     public function logout() {
         $this->session->set_userdata('isLoggedIn', false);
-        $this->call->view('login');
+        redirect('login');
     }
 
 	public function authenticate() {
         $username = $this->io->post('username');
         $password = $this->io->post('password');
-        $this->session->set_userdata('isLoggedIn', false);
 
         $data = $this->user_model->getusers();
         // echo var_dump($data);
         foreach($data as $users){
-            if($users['username'] == $username){
-                if(password_verify($password, $users['password'])){
+            if($username != null && $users['username'] == $username){
+                if($password != null && password_verify($password, $users['password'])){
                     $this->session->set_userdata('isLoggedIn', true);
                     $this->call->view('dashboard');
                     return;
                 } else {
-                    $this->call->view('login');
+                    redirect('login');
                 }
             } else {
-                $this->call->view('login');
+                redirect('login');
             }
         }
     }

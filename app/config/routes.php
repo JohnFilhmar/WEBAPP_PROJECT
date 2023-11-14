@@ -45,11 +45,9 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 */
 
 $router->get('/login', 'UserController::logForm');
-$router->get('/logout', 'UserController::logout');
-$router->get('/register', 'UserController::regForm');
+$router->get('/regForm', 'UserController::regForm');
 $router->get('/', 'UserController::goToFrontpage');
-$router->get('/handleTrueRedirect', 'UserController::handleTrueRedirect');
-$router->get('/handleFalseRedirect', 'UserController::handleFalseRedirect');
+$router->get('/logout', 'UserController::logout');
 
 $router->post('/auth', 'UserController::authenticate');
 $router->post('/createaccount', 'UserController::register');
