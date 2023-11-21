@@ -51,9 +51,11 @@ class UserController extends Controller {
                     $this->call->view('dashboard');
                     return;
                 } else {
+                    $this->session->set_userdata('message','Incorrect Password.');
                     redirect('login');
                 }
             } else {
+                $this->session->set_userdata('message','Incorrect Username or Password.');
                 redirect('login');
             }
         }

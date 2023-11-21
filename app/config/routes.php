@@ -44,9 +44,9 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 |
 */
 
+$router->get('/', 'UserController::goToFrontpage');
 $router->get('/login', 'UserController::logForm');
 $router->get('/regForm', 'UserController::regForm');
-$router->get('/', 'UserController::goToFrontpage');
 $router->get('/logout', 'UserController::logout');
 
 $router->post('/auth', 'UserController::authenticate');
