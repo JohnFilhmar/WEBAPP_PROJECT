@@ -44,10 +44,21 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 |
 */
 
-$router->get('/', 'UserController::goToFrontpage');
-$router->get('/login', 'UserController::logForm');
-$router->get('/regForm', 'UserController::regForm');
-$router->get('/logout', 'UserController::logout');
+// MAIN FRONT PAGES
+$router->get('', 'UserController::home');
+$router->get('home', 'UserController::home');
+$router->get('about', 'UserController::about');
+$router->get('services', 'UserController::services');
+$router->get('contact', 'UserController::contact');
 
-$router->post('/auth', 'UserController::authenticate');
-$router->post('/createaccount', 'UserController::register');
+// BASE LOGIN REGISTER AUTHENTICATION
+$router->get('login', 'UserController::login');
+$router->get('register', 'UserController::register');
+$router->post('auth', 'UserController::auth');
+$router->post('createaccount', 'UserController::createaccount');
+
+// USER ICON DROPDOWN LINKS
+$router->get('profile', 'UserController::profile');
+$router->get('orders', 'UserController::orders');
+$router->get('settings', 'UserController::settings');
+$router->get('logout', 'UserController::logout');

@@ -2,6 +2,22 @@
 defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 
 class User_model extends Model {
+    public function getUserByUsername($username) 
+    {
+        $data = $this->getUsers();
+        foreach($data as $users){
+            if($users['username'] == $username){
+                return [
+                    'id' => $users['id'],
+                    'password' => $users['password'],
+                    'image' => $users['image'],
+                    'email' => $users['email']
+                ];
+            }
+        }
+        return null;
+    }
+
     public function getUsers()
     {
         return $this->db->table('webproject')->get_all();
