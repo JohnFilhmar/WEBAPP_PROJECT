@@ -87,6 +87,15 @@ class UserController extends Controller {
         $this->redirectBackTo('contact','login','Login First!');
     }
 
+    public function policies() {
+        $this->redirectBackTo('policies','login','Login First!');
+    }
+
+    public function licensing() {
+        $this->redirectBackTo('licensing','login','Login First!');
+    }
+
+
     
 
 

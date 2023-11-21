@@ -50,6 +50,8 @@ $router->get('home', 'UserController::home');
 $router->get('about', 'UserController::about');
 $router->get('services', 'UserController::services');
 $router->get('contact', 'UserController::contact');
+$router->get('policies', 'UserController::policies');
+$router->get('licensing', 'UserController::licensing');
 
 // BASE LOGIN REGISTER AUTHENTICATION
 $router->get('login', 'UserController::login');
