@@ -107,8 +107,8 @@ class UserController extends Controller {
             $data['image'] = $this->session->userdata('image');
             $this->call->view($from,$data);
         } else {
-            $message['fail'] = $message;
-            $this->call->view($to,$message);
+            $prompt['fail'] = $message;
+            $this->call->view($to, $message);
         }
     }
 }
