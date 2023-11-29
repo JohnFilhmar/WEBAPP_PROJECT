@@ -30,5 +30,9 @@ class User_model extends Model {
     {
         return $this->db->table('webproject')->insert($data);
     }
+    public function updateUser($data, $id)
+    {
+        return $this->db->table('webproject')->where('id', $id)->update($data);
+    }
 }
 ?>

@@ -31,6 +31,7 @@ class UserController extends Controller {
     
         if ($user && password_verify($password, $user['password'])) {
             $sesData = array(
+                'id' => $user['id'],
                 'username' => $username,
                 'image' => $user['image'],
                 'email' => $user['email'],
@@ -59,7 +60,46 @@ class UserController extends Controller {
 
     // USER DROPDOWN LINKS
     public function profile() {
-        $this->redirectBackTo('profile','login','Login First!');
+        if($this->session->userdata('isLoggedIn')){
+            $data['id'] = $this->session->userdata('id');
+            $data['username'] = $this->session->userdata('username');
+            $data['email'] = $this->session->userdata('email');
+            $data['image'] = $this->session->userdata('image');
+            $this->call->view('profile',$data);
+        } else {
+            $prompt['fail'] = 'Login First!';
+            $this->call->view('login', $prompt);
+        }
+    }
+
+    public function profileEdit($id) {
+        if($this->session->userdata('isLoggedIn')){
+
+            $username = $this->io->post('username');
+            $email = $this->io->post('email');
+            // $image = $this->io->post('image');
+            $image = 'bebe.png';
+
+            $data = array(
+                'username' => $username,
+                'email' => $email,
+                'image' => $image
+            );
+            $this->user_model->updateUser($data,$id);
+
+            $this->session->set_userdata($username);
+            $this->session->set_userdata($email);
+            $this->session->set_userdata($image);
+
+            $data['id'] = $this->session->userdata('id');
+            $data['username'] = $this->session->userdata('username');
+            $data['email'] = $this->session->userdata('email');
+            $data['image'] = $this->session->userdata('image');
+            $this->call->view('home',$data);
+        } else {
+            $prompt['fail'] = 'Login First!';
+            $this->call->view('login', $prompt);
+        }
     }
 
     public function orders() {
@@ -108,7 +148,7 @@ class UserController extends Controller {
             $this->call->view($from,$data);
         } else {
             $prompt['fail'] = $message;
-            $this->call->view($to, $message);
+            $this->call->view($to, $prompt);
         }
     }
 }

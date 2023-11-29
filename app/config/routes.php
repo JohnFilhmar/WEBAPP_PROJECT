@@ -61,6 +61,7 @@ $router->post('createaccount', 'UserController::createaccount');
 
 // USER ICON DROPDOWN LINKS
 $router->get('profile', 'UserController::profile');
+$router->post('profileEdit/(:num)', 'UserController::profile');
 $router->get('orders', 'UserController::orders');
 $router->get('settings', 'UserController::settings');
 $router->get('logout', 'UserController::logout');
