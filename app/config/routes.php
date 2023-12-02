@@ -45,23 +45,28 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 */
 
 // MAIN FRONT PAGES
-$router->get('', 'UserController::home');
-$router->get('home', 'UserController::home');
-$router->get('about', 'UserController::about');
-$router->get('services', 'UserController::services');
-$router->get('contact', 'UserController::contact');
-$router->get('policies', 'UserController::policies');
-$router->get('licensing', 'UserController::licensing');
+$router->get('/', 'UserController::home');
+$router->get('/home', 'UserController::home');
+$router->get('/inventory', 'ProductController::inventory');
+$router->post('createitem', 'ProductController::createitem');
+$router->get('/deleteitem/(:num)', 'ProductController::delete');
+$router->get('/edititem/(:num)', 'ProductController::edit');
+$router->post('/submitedit/(:num)', 'ProductController::submitedit');
+$router->get('/about', 'UserController::about');
+$router->get('/services', 'UserController::services');
+$router->get('/contact', 'UserController::contact');
+$router->get('/policies', 'UserController::policies');
+$router->get('/licensing', 'UserController::licensing');
 
 // BASE LOGIN REGISTER AUTHENTICATION
-$router->get('login', 'UserController::login');
-$router->get('register', 'UserController::register');
+$router->get('/login', 'UserController::login');
+$router->get('/register', 'UserController::register');
 $router->post('auth', 'UserController::auth');
 $router->post('createaccount', 'UserController::createaccount');
 
 // USER ICON DROPDOWN LINKS
-$router->get('profile', 'UserController::profile');
+$router->get('/profile', 'UserController::profile');
 $router->post('profileEdit/(:num)', 'UserController::profile');
-$router->get('orders', 'UserController::orders');
-$router->get('settings', 'UserController::settings');
-$router->get('logout', 'UserController::logout');
+$router->get('/orders', 'UserController::orders');
+$router->get('/settings', 'UserController::settings');
+$router->get('/logout', 'UserController::logout');

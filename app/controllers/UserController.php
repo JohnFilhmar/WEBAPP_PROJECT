@@ -10,7 +10,7 @@ class UserController extends Controller {
 
     // BASE LOGIN REGISTER AUTHENTICATION
     public function login() {
-        $this->redirectBackTo('home','login','Something have gone wrong.');
+        $this->redirectBackTo('home','login','');
     }
 
     public function register() {
@@ -38,7 +38,11 @@ class UserController extends Controller {
                 'isLoggedIn' => true
             );
             $this->session->set_userdata($sesData);
-            redirect('home');
+            $data['username'] = $this->session->userdata('username');
+            $data['email'] = $this->session->userdata('email');
+            $data['image'] = $this->session->userdata('image');
+            $data['products'] = $this->product_model->getProducts();
+            return $this->call->view('home',$data);
         } else {
             $data['fail'] = "Username or Password not found.";
             $this->call->view('login',$data);
@@ -145,10 +149,11 @@ class UserController extends Controller {
             $data['username'] = $this->session->userdata('username');
             $data['email'] = $this->session->userdata('email');
             $data['image'] = $this->session->userdata('image');
+            $data['products'] = $this->product_model->getProducts();
             $this->call->view($from,$data);
         } else {
             $prompt['fail'] = $message;
-            $this->call->view($to, $prompt);
+            $this->call->view($to, $prompt == '' ? null : "");
         }
     }
 }

@@ -86,6 +86,7 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
     	<div class="fof">
 	        <h1><?php echo $heading; ?></h1>
 	        <p><?php echo $message; ?></p>
+			<a href="<?= base_url(); ?>" style="text-decoration: none; color: red;">Go Back</a>
     	</div>
 	</div>
 </body>
