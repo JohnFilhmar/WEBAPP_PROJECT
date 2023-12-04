@@ -21,13 +21,12 @@
                         </a>
                         <div class="p-5">
                             <a href="#">
-                                <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"><?= (isset($product["id"]))? $product["itemname"] . " - " : "" ?><?= (isset($product["id"]))? $product["compatibility"] : "" ?></h5>
+                                <h5 data-item-name="<?= (isset($product["id"])) ? $product["itemname"] : "" ?>" data-compatibility="<?= (isset($product["id"])) ? $product["compatibility"] : "" ?>" class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"><?= (isset($product["id"]))? $product["itemname"] . " - " : "" ?><?= (isset($product["id"]))? $product["compatibility"] : "" ?></h5>
                             </a>
-                            <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"><?= (isset($product["id"]))? $product["description"] : "" ?></p>
-                            <p class="mb-3 font-bold text-gray-700 dark:text-gray-400">Price : <?= (isset($product["id"]))? " ₱" . $product["price"] : "" ?></p>
-                            <p class="mb-3 font-bold text-gray-700 dark:text-gray-400">Available : <?= (isset($product["id"]))? " ₱" . $product["quantity"] : "" ?></p>
-                            <a href="#" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                Add to cart
+                            <p data-description="<?= (isset($product["id"])) ? $product["description"] : "" ?>" class="mb-3 font-normal text-gray-700 dark:text-gray-400"><?= (isset($product["id"]))? $product["description"] : "" ?></p>
+                            <p data-price="<?= (isset($product["id"])) ? $product["price"] : 0 ?>" class="mb-3 font-bold text-gray-700 dark:text-gray-400">Price : <?= (isset($product["id"]))? " ₱" . $product["price"] : "" ?></p>
+                            <p data-quantity="<?= (isset($product["id"])) ? $product["quantity"] : 0 ?>" class="mb-3 font-bold text-gray-700 dark:text-gray-400">Available : <?= (isset($product["id"]))? " ₱" . $product["quantity"] : "" ?></p>
+                            <a href="/addtocart/<?= (isset($product['id'])) ? $product['id'] : "" ?>" id="addToCart" data-product-id="<?= (isset($product["id"])) ? $product["id"] : 0 ?>" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                 <svg class="m-2 w-6 h-6 text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5h4m-2 2V3M6 15a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm0 0h8m-8 0-1-4m9 4a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm.938-11H17l-2 7H5m0 0L3 4m0 0h2M3 4l-.792-3H1"/>
                                 </svg>

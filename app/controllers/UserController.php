@@ -10,17 +10,42 @@ class UserController extends Controller {
 
     // BASE LOGIN REGISTER AUTHENTICATION
     public function login() {
-        $this->redirectBackTo('home','login','');
+        if(!$this->session->userdata('isLoggedIn')){
+            $prompt['success'] = $this->session->flashdata('registered');
+            $prompt['fail'] = $this->session->flashdata('fail');
+            $this->call->view('login',$prompt);
+        } else {
+            redirect('/home');
+        }
+    }
+    public function home() {
+        if($this->session->userdata('isLoggedIn')){
+            $data['username'] = $this->session->userdata('username');
+            $data['email'] = $this->session->userdata('email');
+            $data['image'] = $this->session->userdata('image');
+            $data['products'] = $this->product_model->getProducts();
+            $data['message'] = $this->session->flashdata('message');
+            $data['cart'] = $this->cart_model->getCart($this->session->userdata('userId'));
+            $this->call->view('home',$data);
+        } else {
+            $this->session->set_flashdata('fail','Login First!');
+            redirect('/login');
+        }
     }
 
     public function register() {
-        $this->redirectBackTo('home','register','Something have gone wrong.');
+        if($this->session->userdata('isLoggedIn')){
+            redirect('/home');
+        } else {
+            $this->call->view('register');
+        }
     }
 
     public function logout() {
-        $sesData = array('username','isLoggedIn');
+        $sesData = array('username','isLoggedIn','userId','image','email');
         $this->session->unset_userdata($sesData);
-        $this->call->view('login');
+        $this->session->set_flashdata('registered' , 'Successfully Logged Out!');
+        redirect('/login');
     }
 
     public function auth() {
@@ -31,7 +56,7 @@ class UserController extends Controller {
     
         if ($user && password_verify($password, $user['password'])) {
             $sesData = array(
-                'id' => $user['id'],
+                'userId' => $user['id'],
                 'username' => $username,
                 'image' => $user['image'],
                 'email' => $user['email'],
@@ -42,7 +67,8 @@ class UserController extends Controller {
             $data['email'] = $this->session->userdata('email');
             $data['image'] = $this->session->userdata('image');
             $data['products'] = $this->product_model->getProducts();
-            return $this->call->view('home',$data);
+            $this->session->set_flashdata('message', "Logged In Successfully!");
+            redirect('/home');
         } else {
             $data['fail'] = "Username or Password not found.";
             $this->call->view('login',$data);
@@ -58,22 +84,7 @@ class UserController extends Controller {
         );
         $this->user_model->addUser($data);
         $this->session->set_flashdata('registered','New User Added');
-        $data['success'] = $this->session->flashdata('registered');
-        $this->call->view('login',$data);
-    }
-
-    // USER DROPDOWN LINKS
-    public function profile() {
-        if($this->session->userdata('isLoggedIn')){
-            $data['id'] = $this->session->userdata('id');
-            $data['username'] = $this->session->userdata('username');
-            $data['email'] = $this->session->userdata('email');
-            $data['image'] = $this->session->userdata('image');
-            $this->call->view('profile',$data);
-        } else {
-            $prompt['fail'] = 'Login First!';
-            $this->call->view('login', $prompt);
-        }
+        redirect('/login');
     }
 
     public function profileEdit($id) {
@@ -90,71 +101,61 @@ class UserController extends Controller {
                 'image' => $image
             );
             $this->user_model->updateUser($data,$id);
-
             $this->session->set_userdata($username);
             $this->session->set_userdata($email);
             $this->session->set_userdata($image);
 
-            $data['id'] = $this->session->userdata('id');
-            $data['username'] = $this->session->userdata('username');
-            $data['email'] = $this->session->userdata('email');
-            $data['image'] = $this->session->userdata('image');
-            $this->call->view('home',$data);
+            redirect('/home');
         } else {
-            $prompt['fail'] = 'Login First!';
-            $this->call->view('login', $prompt);
+            $this->session->set_flashdata('fail' , 'Login First!');
+            redirect('/login');
         }
     }
 
-    public function orders() {
-        $this->redirectBackTo('orders','login','Login First!');
+    public function profile() {
+        $this->redirectTo('profile');
     }
 
     public function settings() {
-        $this->redirectBackTo('settings','login','Login First!');
-    }
-
-    // MAIN FRONT PAGES
-    public function home() {
-        $this->redirectBackTo('home','login','Login First!');
+        $this->redirectTo('settings');
     }
 
     public function about() {
-        $this->redirectBackTo('about','login','Login First!');
+        $this->redirectTo('about');
     }
 
     public function services() {
-        $this->redirectBackTo('services','login','Login First!');
+        $this->redirectTo('services');
     }
 
     public function contact() {
-        $this->redirectBackTo('contact','login','Login First!');
+        $this->redirectTo('contact');
     }
 
     public function policies() {
-        $this->redirectBackTo('policies','login','Login First!');
+        $this->redirectTo('policies');
     }
 
     public function licensing() {
-        $this->redirectBackTo('licensing','login','Login First!');
+        $this->redirectTo('licensing');
     }
 
-
+    public function redirectTo($to)
+    {
+        if (!$this->session->userdata('isLoggedIn')) {
+            $this->session->set_flashdata('fail', 'Login First!');
+            redirect('/login');
+        } else {
+            $userId = $this->session->userdata('userId');
     
-
-
-    // REUSABLE FUNCTIONS
-    public function redirectBackTo($from,$to,$message) {
-        if($this->session->userdata('isLoggedIn')){
             $data['username'] = $this->session->userdata('username');
             $data['email'] = $this->session->userdata('email');
             $data['image'] = $this->session->userdata('image');
             $data['products'] = $this->product_model->getProducts();
-            $this->call->view($from,$data);
-        } else {
-            $prompt['fail'] = $message;
-            $this->call->view($to, $prompt == '' ? null : "");
+            $data['message'] = $this->session->flashdata('message');
+            $data['cart'] = $this->cart_model->getCart($userId);
+            $this->call->view($to, $data);
         }
-    }
+    }    
 }
 ?>

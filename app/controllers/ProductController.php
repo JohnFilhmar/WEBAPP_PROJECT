@@ -16,6 +16,7 @@ class ProductController extends Controller {
             $data['products'] = $this->product_model->getProducts();
             $data['toedit'] = $this->session->userdata('editItem');
             $data['message'] = $this->session->userdata('message');
+            $data['cart'] = $this->cart_model->getCart($this->session->userdata('userId'));
             $this->call->view('inventory',$data);
         } else {
             redirect('/');
