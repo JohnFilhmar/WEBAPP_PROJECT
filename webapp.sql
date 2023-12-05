@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Dec 04, 2023 at 12:09 AM
+-- Generation Time: Dec 05, 2023 at 02:17 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -35,14 +35,6 @@ CREATE TABLE `cart` (
   `quantity` int NOT NULL,
   `total` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `cart`
---
-
-INSERT INTO `cart` (`id`, `item_id`, `user_id`, `date_added`, `quantity`, `total`) VALUES
-(10, 35, 32, '2023-12-03 21:32:19', 1, 1),
-(11, 36, 32, '2023-12-03 21:32:30', 2, 4);
 
 -- --------------------------------------------------------
 
@@ -127,21 +119,17 @@ CREATE TABLE `webproject` (
   `username` varchar(64) NOT NULL,
   `password` varchar(64) NOT NULL,
   `image` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL
+  `email` varchar(255) DEFAULT NULL,
+  `role` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `webproject`
 --
 
-INSERT INTO `webproject` (`id`, `username`, `password`, `image`, `email`) VALUES
-(25, 'asdf@gmail.com', '$2y$10$sc6hYhOqkRNfVgc3q0IriulJFi8qFpNwJVSvG43D5ETDQNOAnEWPW', NULL, NULL),
-(26, 'asdf', '$2y$10$zCmkp6RXuehKDeQ82ycb0ebFkVQ6R77Uh0UdhoCaXwrYQdoKMPaiq', NULL, NULL),
-(32, 'ADMIN', '$2y$10$gC8Uxs7TKeAP1xunX058wuzLQTNonGlJf4ZhJbO8lSYwnUBBjZy8S', NULL, NULL),
-(33, '23132', '$2y$10$2xOxm7zfG0QXB98E69Jbq.uDCZ4AEePW96x0XvnGxykUo6Y1sbQNa', NULL, NULL),
-(34, '321321321', '$2y$10$RH7U/lyFbi1QX1CJsEY1eepRF/YSRfhqlKg53gMCAaigviKRc08sW', NULL, NULL),
-(35, '4512', '$2y$10$tBj5xDh8jf7wOFHKDhk4RuqEBYGCsfGczbkbfDMT62Ld2wL9vhPF6', NULL, NULL),
-(36, 'asdfasdffads', '$2y$10$stvkcqYdsNg3ltfG.rTcAOr/u8PcQ5A07DFINhahfwULjqpUJv0uW', NULL, NULL);
+INSERT INTO `webproject` (`id`, `username`, `password`, `image`, `email`, `role`) VALUES
+(37, 'ADMIN', '$2y$10$sZ4woRcU2B46/cjHzH8ZveT2UjkwpgWr6xbVdTnL683gEhcLBIKQm', NULL, NULL, 'USER'),
+(39, 'ADMINISTRATOR', '$2y$10$QRyEQXA/IQ1hCFQLKXW86uz.2Ps6sRktAZ7plSK9Z/wqRQQ4xruuS', NULL, NULL, 'ADMIN');
 
 --
 -- Indexes for dumped tables
@@ -187,7 +175,7 @@ ALTER TABLE `webproject`
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `login_auth`
@@ -211,7 +199,7 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `webproject`
 --
 ALTER TABLE `webproject`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- Constraints for dumped tables
@@ -221,8 +209,8 @@ ALTER TABLE `webproject`
 -- Constraints for table `cart`
 --
 ALTER TABLE `cart`
-  ADD CONSTRAINT `constraint_products_id_FK_cart_item_id` FOREIGN KEY (`item_id`) REFERENCES `products` (`id`),
-  ADD CONSTRAINT `constraint_users_id_FK_cart_user_id` FOREIGN KEY (`user_id`) REFERENCES `webproject` (`id`);
+  ADD CONSTRAINT `constraint_products_id_FK_cart_item_id` FOREIGN KEY (`item_id`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `constraint_users_id_FK_cart_user_id` FOREIGN KEY (`user_id`) REFERENCES `webproject` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
