@@ -12,7 +12,8 @@ class User_model extends Model {
                     'password' => $users['password'],
                     'image' => $users['image'],
                     'email' => $users['email'],
-                    'role' => $users['role']
+                    'role' => $users['role'],
+                    'status' => $users['status']
                 ];
             }
         }
@@ -34,6 +35,10 @@ class User_model extends Model {
     public function updateUser($data, $id)
     {
         return $this->db->table('webproject')->where('id', $id)->update($data);
+    }
+    public function deleteUser($id)
+    {
+        return $this->db->table('webproject')->where('id', $id)->delete();
     }
 }
 ?>

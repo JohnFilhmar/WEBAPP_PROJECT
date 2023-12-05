@@ -23,6 +23,7 @@ class UserController extends Controller {
             $data['username'] = $this->session->userdata('username');
             $data['email'] = $this->session->userdata('email');
             $data['role'] = $this->session->userdata('role');
+            $data['status'] = $this->session->userdata('status');
             $data['image'] = $this->session->userdata('image');
             $data['products'] = $this->product_model->getProducts();
             $data['message'] = $this->session->flashdata('message');
@@ -54,22 +55,28 @@ class UserController extends Controller {
         $password = $this->io->post('password');
     
         $user = $this->user_model->getUserByUsername($username);
-    
-        if ($user && password_verify($password, $user['password'])) {
-            $sesData = array(
-                'userId' => $user['id'],
-                'username' => $username,
-                'image' => $user['image'],
-                'email' => $user['email'],
-                'role' => $user['role'],
-                'isLoggedIn' => true
-            );
-            $this->session->set_userdata($sesData);
-            $this->session->set_flashdata('message', "Logged In Successfully!");
-            redirect('/home');
+
+        if($user['status'] == 'UP'){
+            if ($user && password_verify($password, $user['password'])) {
+                $sesData = array(
+                    'userId' => $user['id'],
+                    'username' => $username,
+                    'image' => $user['image'],
+                    'email' => $user['email'],
+                    'role' => $user['role'],
+                    'status' => $user['status'],
+                    'isLoggedIn' => true
+                );
+                $this->session->set_userdata($sesData);
+                $this->session->set_flashdata('message', "Logged In Successfully!");
+                redirect('/home');
+            } else {
+                $this->session->set_flashdata('fail', "Username or Password not found!");
+                redirect('/login');
+            }
         } else {
-            $data['fail'] = "Username or Password not found.";
-            $this->call->view('login',$data);
+            $this->session->set_flashdata('fail', "Your account is down. Contact an Administrator!");
+            redirect('/login');
         }
     }
     
@@ -78,12 +85,13 @@ class UserController extends Controller {
         $password = password_hash($this->io->post('password'), PASSWORD_DEFAULT);
         $key = $this->io->post('secretkey');
 
-        $role = ($key == "FILHMAROLA") ? 'ADMIN' : 'USER';
+        $role = ($key == "ADMINISTRATOR") ? 'ADMIN' : (($key == "SALESCLERK") ? 'CLERK' : 'USER');
 
         $data = array(
             'username' => $username,
             'password' => $password,
-            'role' => $role
+            'role' => $role,
+            'status' => 'DOWN'
         );
         $this->user_model->addUser($data);
         $this->session->set_flashdata('registered','New User Added');
@@ -111,6 +119,55 @@ class UserController extends Controller {
         } else {
             $this->session->set_flashdata('fail' , 'Login First!');
             redirect('/login');
+        }
+    }
+
+    public function useraccounts() {
+        if (!$this->session->userdata('isLoggedIn')) {
+            $this->session->set_flashdata('fail', 'Login First!');
+            redirect('/login');
+        } else {
+            $userId = $this->session->userdata('userId');
+    
+            $data['userId'] = $this->session->userdata('userId');
+            $data['username'] = $this->session->userdata('username');
+            $data['email'] = $this->session->userdata('email');
+            $data['role'] = $this->session->userdata('role');
+            $data['status'] = $this->session->userdata('status');
+            $data['image'] = $this->session->userdata('image');
+            $data['users'] = $this->user_model->getUsers();
+            $data['message'] = $this->session->flashdata('message');
+            $data['cart'] = $this->cart_model->getCart($userId);
+            $this->call->view('useraccounts', $data);
+        }
+    }
+
+    public function deleteuser($id){
+        if (!$this->session->userdata('isLoggedIn')) {
+            $this->session->set_flashdata('fail', 'Login First!');
+            redirect('/login');
+        } else {
+            $this->user_model->deleteUser($id);
+            $this->session->set_flashdata('message','User account deleted!');
+            redirect('/useraccounts');
+        }
+    }
+
+    public function toggleaccess($id){
+        if (!$this->session->userdata('isLoggedIn')) {
+            $this->session->set_flashdata('fail', 'Login First!');
+            redirect('/login');
+        } else {
+            $data = $this->user_model->searchUser($id);
+            if($data['status'] == 'UP'){
+                $this->user_model->updateUser(['status' => 'DOWN'], $id);
+                $this->session->set_flashdata('message','User account disabled!');
+                redirect('/useraccounts');
+            } else {
+                $this->user_model->updateUser(['status' => 'UP'], $id);
+                $this->session->set_flashdata('message','User account enabled!');
+                redirect('/useraccounts');
+            }
         }
     }
 
@@ -153,6 +210,7 @@ class UserController extends Controller {
             $data['username'] = $this->session->userdata('username');
             $data['email'] = $this->session->userdata('email');
             $data['role'] = $this->session->userdata('role');
+            $data['status'] = $this->session->userdata('status');
             $data['image'] = $this->session->userdata('image');
             $data['products'] = $this->product_model->getProducts();
             $data['message'] = $this->session->flashdata('message');

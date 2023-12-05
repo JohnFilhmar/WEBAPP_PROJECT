@@ -55,6 +55,8 @@ $router->get('/about', 'UserController::about');
 
 $router->get('/inventory', 'ProductController::inventory');
 $router->post('createitem', 'ProductController::createitem');
+$router->get('/plusproduct/(:num)', 'ProductController::plusproduct');
+$router->get('/minusproduct/(:num)', 'ProductController::minusproduct');
 $router->get('/deleteitem/(:num)', 'ProductController::delete');
 $router->get('/edititem/(:num)', 'ProductController::edit');
 $router->post('/submitedit/(:num)', 'ProductController::submitedit');
@@ -70,6 +72,9 @@ $router->post('createaccount', 'UserController::createaccount');
 
 // USER ICON DROPDOWN LINKS
 $router->get('/profile', 'UserController::profile');
+$router->get('/useraccounts', 'UserController::useraccounts');
+$router->get('/toggleaccess/(:num)', 'UserController::toggleaccess');
+$router->get('/deleteuser/(:num)', 'UserController::deleteuser');
 $router->post('profileEdit/(:num)', 'UserController::profile');
 $router->get('/settings', 'UserController::settings');
 $router->get('/logout', 'UserController::logout');

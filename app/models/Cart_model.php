@@ -25,6 +25,10 @@ class Cart_model extends Model {
     {
         return $this->db->table('cart')->where('item_id', $id)->get();
     }
+    public function searchCartId($id)
+    {
+        return $this->db->table('cart')->where('id', $id)->get();
+    }
     public function deleteCart($id)
     {
         return $this->db->table('cart')->where('id', $id)->delete();

@@ -40,9 +40,22 @@ class CartController extends Controller {
 
     public function remove($id)
     {
-        $this->cart_model->deleteCart($id);
-        $this->session->set_flashdata('message',"Successfully Removed!");
+        $data = $this->cart_model->searchCartId($id);
+        if ($data) {
+            $product = $this->product_model->searchProducts($data['item_id']);
+            if ($product) {
+                $newQuantity = $product['quantity'] + $data['quantity'];
+                $this->product_model->updateProducts(['quantity' => $newQuantity], $data['item_id']);
+                $this->cart_model->deleteCart($id);
+                $this->session->set_flashdata('message', 'Successfully Removed!');
+            } else {
+                $this->session->set_flashdata('message', 'Error: Product not found.');
+            }
+        } else {
+            $this->session->set_flashdata('message', 'Error: Cart item not found.');
+        }
         redirect('/');
     }
+    
 }
 ?>
