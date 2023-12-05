@@ -13,6 +13,7 @@ class ProductController extends Controller {
             $data['username'] = $this->session->userdata('username');
             $data['email'] = $this->session->userdata('email');
             $data['image'] = $this->session->userdata('image');
+            $data['role'] = $this->session->userdata('role');
             $data['products'] = $this->product_model->getProducts();
             $data['toedit'] = $this->session->userdata('editItem');
             $data['message'] = $this->session->userdata('message');

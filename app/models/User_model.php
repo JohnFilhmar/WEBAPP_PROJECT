@@ -11,7 +11,8 @@ class User_model extends Model {
                     'id' => $users['id'],
                     'password' => $users['password'],
                     'image' => $users['image'],
-                    'email' => $users['email']
+                    'email' => $users['email'],
+                    'role' => $users['role']
                 ];
             }
         }

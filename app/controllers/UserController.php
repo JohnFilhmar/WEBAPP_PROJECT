@@ -22,6 +22,7 @@ class UserController extends Controller {
         if($this->session->userdata('isLoggedIn')){
             $data['username'] = $this->session->userdata('username');
             $data['email'] = $this->session->userdata('email');
+            $data['role'] = $this->session->userdata('role');
             $data['image'] = $this->session->userdata('image');
             $data['products'] = $this->product_model->getProducts();
             $data['message'] = $this->session->flashdata('message');
@@ -60,13 +61,10 @@ class UserController extends Controller {
                 'username' => $username,
                 'image' => $user['image'],
                 'email' => $user['email'],
+                'role' => $user['role'],
                 'isLoggedIn' => true
             );
             $this->session->set_userdata($sesData);
-            $data['username'] = $this->session->userdata('username');
-            $data['email'] = $this->session->userdata('email');
-            $data['image'] = $this->session->userdata('image');
-            $data['products'] = $this->product_model->getProducts();
             $this->session->set_flashdata('message', "Logged In Successfully!");
             redirect('/home');
         } else {
@@ -78,9 +76,14 @@ class UserController extends Controller {
     public function createaccount() {
         $username = $this->io->post('username');
         $password = password_hash($this->io->post('password'), PASSWORD_DEFAULT);
+        $key = $this->io->post('secretkey');
+
+        $role = ($key == "FILHMAROLA") ? 'ADMIN' : 'USER';
+
         $data = array(
             'username' => $username,
-            'password' => $password
+            'password' => $password,
+            'role' => $role
         );
         $this->user_model->addUser($data);
         $this->session->set_flashdata('registered','New User Added');
@@ -92,7 +95,6 @@ class UserController extends Controller {
 
             $username = $this->io->post('username');
             $email = $this->io->post('email');
-            // $image = $this->io->post('image');
             $image = 'bebe.png';
 
             $data = array(
@@ -150,12 +152,13 @@ class UserController extends Controller {
     
             $data['username'] = $this->session->userdata('username');
             $data['email'] = $this->session->userdata('email');
+            $data['role'] = $this->session->userdata('role');
             $data['image'] = $this->session->userdata('image');
             $data['products'] = $this->product_model->getProducts();
             $data['message'] = $this->session->flashdata('message');
             $data['cart'] = $this->cart_model->getCart($userId);
             $this->call->view($to, $data);
         }
-    }    
+    }
 }
 ?>
