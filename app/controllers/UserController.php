@@ -71,7 +71,9 @@ class UserController extends Controller {
             redirect('/home');
         } else {
             $data['fail'] = "Username or Password not found.";
-            $this->call->view('login',$data);
+            // $this->call->view('login',$data);
+            $this->session->set_flashdata('fail','Username or Password not Found!');
+            redirect('/login');
         }
     }
     
@@ -89,7 +91,6 @@ class UserController extends Controller {
 
     public function profileEdit($id) {
         if($this->session->userdata('isLoggedIn')){
-
             $username = $this->io->post('username');
             $email = $this->io->post('email');
             // $image = $this->io->post('image');
