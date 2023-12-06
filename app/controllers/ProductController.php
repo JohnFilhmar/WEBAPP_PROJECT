@@ -2,17 +2,21 @@
 defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 
 class ProductController extends Controller {
+
     public function __construct()
     {
         parent::__construct();
         define('FCPATH', dirname(__FILE__).DIRECTORY_SEPARATOR);
     }
+
 	public function inventory() 
     {
         if ($this->session->userdata('isLoggedIn')) {
             $data['username'] = $this->session->userdata('username');
             $data['email'] = $this->session->userdata('email');
             $data['image'] = $this->session->userdata('image');
+            $data['role'] = $this->session->userdata('role');
+            $data['status'] = $this->session->userdata('status');
             $data['products'] = $this->product_model->getProducts();
             $data['toedit'] = $this->session->userdata('editItem');
             $data['message'] = $this->session->userdata('message');
@@ -22,6 +26,7 @@ class ProductController extends Controller {
             redirect('/');
         }
     }
+
 	public function createitem()
     {
         $this->call->library('upload', $_FILES["image"]);
@@ -57,6 +62,7 @@ class ProductController extends Controller {
             redirect('/inventory');
 		}
     }
+
     public function delete($id)
     {
         $datas = $this->product_model->searchProducts($id);
@@ -77,11 +83,13 @@ class ProductController extends Controller {
             redirect('/inventory');
         }
     }
+
     public function edit($id)
     {
         $this->session->set_flashdata('editItem' , $this->product_model->searchProducts($id));
         redirect('/inventory');
     }
+
     public function submitedit($id)
     {
         $datas = $this->product_model->searchProducts($id);
@@ -125,6 +133,40 @@ class ProductController extends Controller {
         } else {
             $this->session->set_flashdata('message', 'File not found!');
             redirect('/inventory');
+        }
+    }
+
+    public function plusproduct($id)
+    {
+        if ($this->session->userdata('isLoggedIn')) {
+            $data = $this->product_model->searchProducts($id);
+            if($data['quantity'] >= 0){
+                $this->product_model->updateProducts(['quantity' => $data['quantity'] + 1], $id);
+                $this->session->set_flashdata('message',$data['itemname'] . " Added by 1!");
+                redirect('/inventory');
+            } else {
+                $this->session->set_flashdata('message',"Can't do that!");
+                redirect('/inventory');
+            }
+        } else {
+            redirect('/');
+        }
+    }
+
+    public function minusproduct($id)
+    {
+        if ($this->session->userdata('isLoggedIn')) {
+            $data = $this->product_model->searchProducts($id);
+            if($data['quantity'] > 0){
+                $this->product_model->updateProducts(['quantity' => $data['quantity'] - 1], $id);
+                $this->session->set_flashdata('message',$data['itemname'] . " Reduced by 1!");
+                redirect('/inventory');
+            } else {
+                $this->session->set_flashdata('message',"Can't do that!");
+                redirect('/inventory');
+            }
+        } else {
+            redirect('/');
         }
     }
 }

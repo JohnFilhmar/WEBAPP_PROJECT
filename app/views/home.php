@@ -14,7 +14,7 @@
         </div>
         <?php else: ?>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 overflow-auto">
-                <?php foreach($products as $product): ?>
+                <?php foreach($products as $product): if($product['quantity'] > 0): ?>
                     <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                         <a href="#">
                             <img class="rounded-t-lg" src="<?= base_url(); ?>/public/uploads/items/<?= (isset($product["id"]))? $product["image"] : "" ?>" alt='No image to show' />
@@ -33,7 +33,7 @@
                             </a>
                         </div>
                     </div>
-                <?php endforeach; ?>
+                <?php endif; endforeach; ?>
             </div>
         <?php endif; ?>
     </div>

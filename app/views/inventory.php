@@ -2,7 +2,99 @@
     include 'template/header.php';
 ?>
     <div class="p-4 container mx-auto">
-        <div class="rounded-lg pb-4 mb-5">
+        <div class="rounded-lg bg-gray-200 container mx-auto mb-5">
+            <div class="flex justify-between">
+                <p class="text-2xl font-bold p-5 m-5">Inventory</p>
+                <a href="#additem" class="text-2xl font-bold p-5 m-5 text-blue-900 bg-blue-300 rounded-lg">Add An Item</a>
+            </div>
+            <div class="relative overflow-x-auto shadow-md text-center">
+                <table class="w-full text-sm rtl:text-right text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">
+                                Id
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Product Name
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Compatibility
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Description
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Price
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Date Added
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Quantity
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach($products as $product): ?>
+                            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                <td class="px-6 py-4">
+                                    <?= (isset($product['id']) ? $product['id'] : "" ); ?>
+                                </td>
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    <?= (isset($product['id']) ? $product['itemname'] : "" ); ?>
+                                </th>
+                                <td class="px-6 py-4">
+                                    <?= (isset($product['id']) ? $product['compatibility'] : "" ); ?>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <?= (isset($product['id']) ? $product['description'] : "" ); ?>
+                                </td>
+                                <td class="px-6 py-4">
+                                    ₱<?= (isset($product['id']) ? $product['price'] : "" ); ?>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <?= (isset($product['id']) ? $product['date_added'] : "" ); ?>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex justify-between">
+                                        <a href="/plusproduct/<?= $product['id']; ?>">
+                                            <svg class="w-4 h-4 hover:text-blue-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                                            </svg>
+                                        </a>
+                                        <span>
+                                            <?= (isset($product['id']) ? $product['quantity'] : "" ); ?>
+                                        </span>
+                                        <a <?= ($product['quantity'] < 1) ? 'class="disabled:opacity-75 pointer-events-none"' : '' ?> href="/minusproduct/<?= $product['id']; ?>">
+                                            <svg class="w-4 h-4 hover:text-blue-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"/>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 flex gap-2 justify-between">
+                                    <a href="/edititem/<?= (isset($product['id'])? $product['id'] : "" ); ?>" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                        <svg class="w-4 h-4 hover:text-blue-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                                            <path d="M12.687 14.408a3.01 3.01 0 0 1-1.533.821l-3.566.713a3 3 0 0 1-3.53-3.53l.713-3.566a3.01 3.01 0 0 1 .821-1.533L10.905 2H2.167A2.169 2.169 0 0 0 0 4.167v11.666A2.169 2.169 0 0 0 2.167 18h11.666A2.169 2.169 0 0 0 16 15.833V11.1l-3.313 3.308Zm5.53-9.065.546-.546a2.518 2.518 0 0 0 0-3.56 2.576 2.576 0 0 0-3.559 0l-.547.547 3.56 3.56Z"/>
+                                            <path d="M13.243 3.2 7.359 9.081a.5.5 0 0 0-.136.256L6.51 12.9a.5.5 0 0 0 .59.59l3.566-.713a.5.5 0 0 0 .255-.136L16.8 6.757 13.243 3.2Z"/>
+                                        </svg>
+                                    </a>
+                                    <a href="/deleteitem/<?= (isset($product['id'])? $product['id'] : "" ); ?>" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                        <svg class="w-4 h-4 hover:text-blue-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h16M7 8v8m4-8v8M7 1h4a1 1 0 0 1 1 1v3H6V2a1 1 0 0 1 1-1ZM3 5h12v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5Z"/>
+                                        </svg>
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="additem" class="rounded-lg pb-4">
             <p class="text-2xl font-bold my-5 py-5"><?= (isset($toedit['id'])) ? "Edit Item" : "Add Item" ?></p>
             <form class="mx-auto mb-5" action="<?= (isset($toedit['id'])) ? "/submitedit/" . $toedit['id'] : "/createitem" ?>" method="post" enctype="multipart/form-data">
                 <div class="relative z-0 w-full mb-5 group">
@@ -59,81 +151,6 @@
                 </div>
                 </div>
             </form>
-        </div>
-        <div class="rounded-lg bg-gray-200 container mx-auto">
-            <p class="text-2xl font-bold p-5 m-5">Inventory</p>
-            <div class="relative overflow-x-auto shadow-md text-center">
-                <table class="w-full text-sm rtl:text-right text-gray-500 dark:text-gray-400">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                            <th scope="col" class="px-6 py-3">
-                                Id
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Product Name
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Compatibility
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Description
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Price
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Date Added
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Quantity
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Action
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach($products as $product): ?>
-                            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                <td class="px-6 py-4">
-                                    <?= (isset($product['id']) ? $product['id'] : "" ); ?>
-                                </td>
-                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    <?= (isset($product['id']) ? $product['itemname'] : "" ); ?>
-                                </th>
-                                <td class="px-6 py-4">
-                                    <?= (isset($product['id']) ? $product['compatibility'] : "" ); ?>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <?= (isset($product['id']) ? $product['description'] : "" ); ?>
-                                </td>
-                                <td class="px-6 py-4">
-                                    ₱<?= (isset($product['id']) ? $product['price'] : "" ); ?>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <?= (isset($product['id']) ? $product['date_added'] : "" ); ?>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <?= (isset($product['id']) ? $product['quantity'] : "" ); ?>
-                                </td>
-                                <td class="px-6 py-4 flex gap-2 justify-between">
-                                    <a href="/edititem/<?= (isset($product['id'])? $product['id'] : "" ); ?>" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                        <svg class="w-4 h-4 hover:text-blue-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
-                                            <path d="M12.687 14.408a3.01 3.01 0 0 1-1.533.821l-3.566.713a3 3 0 0 1-3.53-3.53l.713-3.566a3.01 3.01 0 0 1 .821-1.533L10.905 2H2.167A2.169 2.169 0 0 0 0 4.167v11.666A2.169 2.169 0 0 0 2.167 18h11.666A2.169 2.169 0 0 0 16 15.833V11.1l-3.313 3.308Zm5.53-9.065.546-.546a2.518 2.518 0 0 0 0-3.56 2.576 2.576 0 0 0-3.559 0l-.547.547 3.56 3.56Z"/>
-                                            <path d="M13.243 3.2 7.359 9.081a.5.5 0 0 0-.136.256L6.51 12.9a.5.5 0 0 0 .59.59l3.566-.713a.5.5 0 0 0 .255-.136L16.8 6.757 13.243 3.2Z"/>
-                                        </svg>
-                                    </a>
-                                    <a href="/deleteitem/<?= (isset($product['id'])? $product['id'] : "" ); ?>" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                        <svg class="w-4 h-4 hover:text-blue-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h16M7 8v8m4-8v8M7 1h4a1 1 0 0 1 1 1v3H6V2a1 1 0 0 1 1-1ZM3 5h12v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5Z"/>
-                                        </svg>
-                                    </a>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
         </div>
     </div>
 <?php
