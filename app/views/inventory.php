@@ -2,7 +2,7 @@
     include 'template/header.php';
 ?>
     <div class="p-4 container mx-auto">
-        <div class="rounded-lg bg-gray-200 container mx-auto mb-5">
+        <div class="overflow-y-auto max-h-96 h-96 rounded-lg bg-gray-200 container mx-auto mb-5">
             <div class="flex justify-between">
                 <p class="text-2xl font-bold p-5 m-5">Inventory</p>
                 <a href="#additem" class="text-2xl font-bold p-5 m-5 text-blue-900 bg-blue-300 rounded-lg">Add An Item</a>
@@ -32,9 +32,11 @@
                             <th scope="col" class="px-6 py-3">
                                 Quantity
                             </th>
+                            <?php if($role == 'ADMIN'): ?>
                             <th scope="col" class="px-6 py-3">
                                 Action
                             </th>
+                            <?php endif; ?>
                         </tr>
                     </thead>
                     <tbody>
@@ -59,22 +61,27 @@
                                     <?= (isset($product['id']) ? $product['date_added'] : "" ); ?>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <div class="flex justify-between">
+                                    <div class="<?= $role == 'ADMIN' ? 'flex justify-between' : 'text-center' ?>">
+                                        <?php if($role == 'ADMIN'): ?>
                                         <a href="/plusproduct/<?= $product['id']; ?>">
                                             <svg class="w-4 h-4 hover:text-blue-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
                                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
                                             </svg>
                                         </a>
+                                        <?php endif; ?>
                                         <span>
                                             <?= (isset($product['id']) ? $product['quantity'] : "" ); ?>
                                         </span>
+                                        <?php if($role == 'ADMIN'): ?>
                                         <a <?= ($product['quantity'] < 1) ? 'class="disabled:opacity-75 pointer-events-none"' : '' ?> href="/minusproduct/<?= $product['id']; ?>">
                                             <svg class="w-4 h-4 hover:text-blue-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
                                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"/>
                                             </svg>
                                         </a>
+                                        <?php endif; ?>
                                     </div>
                                 </td>
+                                <?php if($role == 'ADMIN'): ?>
                                 <td class="px-6 py-4 flex gap-2 justify-between">
                                     <a href="/edititem/<?= (isset($product['id'])? $product['id'] : "" ); ?>" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
                                         <svg class="w-4 h-4 hover:text-blue-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
@@ -88,6 +95,7 @@
                                         </svg>
                                     </a>
                                 </td>
+                                <?php endif; ?>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>

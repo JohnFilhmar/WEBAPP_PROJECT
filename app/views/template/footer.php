@@ -47,5 +47,6 @@
         </script>
     <?php endif; ?>
     <script src="<?= base_url(); ?>/public/assets/flowbite.min.js"></script>
+    <script src="<?= base_url(); ?>/public/assets/alpine.min.js"></script>
 </body>
 </html>

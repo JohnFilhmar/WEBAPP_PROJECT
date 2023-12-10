@@ -43,6 +43,13 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 |
 */
 
+#--------------------------------------------------------------------
+# Stripe
+#--------------------------------------------------------------------
+
+$config['stripe_key'] = 'pk_test_51OLKqlHmjCHS8rIWSscDottGUKYwFAAUgETqMafT8niVEyboIRdIt4e9P8xMxzrQdjaRLwN3z2EWvj6hyM3XvswR00kOkp9U6J';
+$config['stripe_secret'] = 'sk_test_51OLKqlHmjCHS8rIW2ciw0DurxS8s0LdbMzEJMpGkKbebbJpvXfcEDjZL2MaTFsMMDdRIZvKnNQ9jIVTLJDVRwhFg00sQ1AwuLx';
+
 /*
 | -------------------------------------------------------------------
 |  Your Own Configs

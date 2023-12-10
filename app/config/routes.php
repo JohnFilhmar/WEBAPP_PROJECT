@@ -46,6 +46,7 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 
 // MAIN FRONT PAGES
 $router->get('/', 'UserController::home');
+$router->get('/shop', 'UserController::baseHome');
 $router->get('/home', 'UserController::home');
 $router->get('/services', 'UserController::services');
 $router->get('/contact', 'UserController::contact');
@@ -63,6 +64,11 @@ $router->post('/submitedit/(:num)', 'ProductController::submitedit');
 
 $router->get('/addtocart/(:num)', 'CartController::addtocart');
 $router->get('/removefromcart/(:num)', 'CartController::remove');
+$router->get('/changecheck/(:num)', 'CartController::changeCheck');
+
+$router->post('/checkout', 'ReceiptController::addreceipt');
+$router->get('/orders', 'ReceiptController::orders');
+$router->get('/changestatus/(:num)', 'ReceiptController::changestatus');
 
 // BASE LOGIN REGISTER AUTHENTICATION
 $router->get('/login', 'UserController::login');
@@ -75,6 +81,6 @@ $router->get('/profile', 'UserController::profile');
 $router->get('/useraccounts', 'UserController::useraccounts');
 $router->get('/toggleaccess/(:num)', 'UserController::toggleaccess');
 $router->get('/deleteuser/(:num)', 'UserController::deleteuser');
-$router->post('profileEdit/(:num)', 'UserController::profile');
+$router->post('profileEdit/(:num)', 'UserController::profileEdit');
 $router->get('/settings', 'UserController::settings');
 $router->get('/logout', 'UserController::logout');

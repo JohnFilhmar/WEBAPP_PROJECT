@@ -6,6 +6,22 @@ class UserController extends Controller {
     public function __construct()
     {
         parent::__construct();
+        $this->user = $this->user_model->searchUser($this->session->userdata('userId'));
+        define('FCPATH', dirname(__FILE__).DIRECTORY_SEPARATOR);
+    }
+
+    public function baseHome() {
+        $userId = $this->session->userdata('userId');
+        $data['userName'] = $this->session->userdata('userName');
+        $data['userEmail'] = $this->session->userdata('userEmail');
+        $data['role'] = 'NOLOGIN';
+        $data['userImage'] = $this->session->userdata('userImage');
+        $data['products'] = $this->product_model->getProducts();
+        $data['message'] = array();
+        $data['cart'] = array();
+        $data['filteredcart'] = array();
+        $this->session->set_userdata('prevUrl', $_SERVER['REQUEST_URI']);
+        $this->call->view('home',$data);
     }
 
     // BASE LOGIN REGISTER AUTHENTICATION
@@ -13,6 +29,7 @@ class UserController extends Controller {
         if(!$this->session->userdata('isLoggedIn')){
             $prompt['success'] = $this->session->flashdata('registered');
             $prompt['fail'] = $this->session->flashdata('fail');
+            $this->session->set_userdata('prevUrl', $_SERVER['REQUEST_URI']);
             $this->call->view('login',$prompt);
         } else {
             redirect('/home');
@@ -20,14 +37,16 @@ class UserController extends Controller {
     }
     public function home() {
         if($this->session->userdata('isLoggedIn')){
-            $data['username'] = $this->session->userdata('username');
-            $data['email'] = $this->session->userdata('email');
+            $userId = $this->session->userdata('userId');
+            $data['userName'] = $this->session->userdata('userName');
+            $data['userEmail'] = $this->session->userdata('userEmail');
             $data['role'] = $this->session->userdata('role');
-            $data['status'] = $this->session->userdata('status');
-            $data['image'] = $this->session->userdata('image');
+            $data['userImage'] = $this->session->userdata('userImage');
             $data['products'] = $this->product_model->getProducts();
             $data['message'] = $this->session->flashdata('message');
-            $data['cart'] = $this->cart_model->getCart($this->session->userdata('userId'));
+            $data['cart'] = $this->cart_model->getCart($userId);
+            $data['filteredcart'] = $this->cart_model->getFilteredCart($userId);
+            $this->session->set_userdata('prevUrl', $_SERVER['REQUEST_URI']);
             $this->call->view('home',$data);
         } else {
             $this->session->set_flashdata('fail','Login First!');
@@ -44,7 +63,7 @@ class UserController extends Controller {
     }
 
     public function logout() {
-        $sesData = array('username','isLoggedIn','userId','image','email');
+        $sesData = array('userName','isLoggedIn','userId','userImage','userEmail','role');
         $this->session->unset_userdata($sesData);
         $this->session->set_flashdata('registered' , 'Successfully Logged Out!');
         redirect('/login');
@@ -55,14 +74,13 @@ class UserController extends Controller {
         $password = $this->io->post('password');
     
         $user = $this->user_model->getUserByUsername($username);
-
         if($user['status'] == 'UP'){
             if ($user && password_verify($password, $user['password'])) {
                 $sesData = array(
                     'userId' => $user['id'],
-                    'username' => $username,
-                    'image' => $user['image'],
-                    'email' => $user['email'],
+                    'userName' => $username,
+                    'userImage' => $user['image'],
+                    'userEmail' => $user['email'],
                     'role' => $user['role'],
                     'status' => $user['status'],
                     'isLoggedIn' => true
@@ -99,25 +117,48 @@ class UserController extends Controller {
     }
 
     public function profileEdit($id) {
-        if($this->session->userdata('isLoggedIn')){
+        if (empty($this->user['image'])) {
+            $localFilePath = FCPATH . '../../public/uploads/items/' . $this->user['image'];
+            if (file_exists($localFilePath)) {
+                if(unlink($localFilePath)){
+                    $this->updateUserFields($id);
+                }
+            } else {
+                $this->session->set_flashdata('message', 'Error deleting file!');
+                redirect('/profile');
+            }
+        } else {
+            $this->updateUserFields($id);
+        }
+    }    
+
+    private function updateUserFields($id)
+    {
+        $this->call->library('upload', $_FILES["avatar"]);
+        $this->upload
+            ->set_dir('public/uploads/users')
+            ->allowed_extensions(array('jpg'))
+            ->allowed_mimes(array('image/jpeg'))
+            ->is_image();
+    
+        if ($this->upload->do_upload()) {
             $username = $this->io->post('username');
             $email = $this->io->post('email');
-            $image = 'bebe.png';
-
+            $image = $this->upload->get_filename();
             $data = array(
                 'username' => $username,
                 'email' => $email,
                 'image' => $image
             );
-            $this->user_model->updateUser($data,$id);
-            $this->session->set_userdata($username);
-            $this->session->set_userdata($email);
-            $this->session->set_userdata($image);
-
-            redirect('/home');
+            $this->user_model->updateUser($data, $id);
+            $this->session->set_userdata('userName', $username);
+            $this->session->set_userdata('userEmail', $email);
+            $this->session->set_userdata('userImage', $image);
+            $this->session->set_flashdata('message', 'Account Updated!');
+            redirect('/profile');
         } else {
-            $this->session->set_flashdata('fail' , 'Login First!');
-            redirect('/login');
+            $this->session->set_flashdata('message', 'Updating failed!');
+            redirect('/profile');
         }
     }
 
@@ -125,19 +166,23 @@ class UserController extends Controller {
         if (!$this->session->userdata('isLoggedIn')) {
             $this->session->set_flashdata('fail', 'Login First!');
             redirect('/login');
-        } else {
+        } elseif($this->session->userdata('role') == 'ADMIN' && $this->session->userdata('isLoggedIn')) {
             $userId = $this->session->userdata('userId');
     
             $data['userId'] = $this->session->userdata('userId');
             $data['username'] = $this->session->userdata('username');
-            $data['email'] = $this->session->userdata('email');
+            $data['userEmail'] = $this->session->userdata('userEmail');
             $data['role'] = $this->session->userdata('role');
             $data['status'] = $this->session->userdata('status');
-            $data['image'] = $this->session->userdata('image');
+            $data['userImage'] = $this->session->userdata('userImage');
             $data['users'] = $this->user_model->getUsers();
             $data['message'] = $this->session->flashdata('message');
             $data['cart'] = $this->cart_model->getCart($userId);
+            $data['filteredcart'] = $this->cart_model->getFilteredCart($userId);
+            $this->session->set_userdata('prevUrl', $_SERVER['REQUEST_URI']);
             $this->call->view('useraccounts', $data);
+        } else {
+            redirect('/');
         }
     }
 
@@ -205,15 +250,22 @@ class UserController extends Controller {
             redirect('/login');
         } else {
             $userId = $this->session->userdata('userId');
-    
-            $data['username'] = $this->session->userdata('username');
-            $data['email'] = $this->session->userdata('email');
+
+            $processingReceipts = $this->receipts_model->searchReceiptsByUser($userId);
+
+            $data['userId'] = $this->session->userdata('userId');
+            $data['userName'] = $this->session->userdata('userName');
+            $data['userEmail'] = $this->session->userdata('userEmail');
             $data['role'] = $this->session->userdata('role');
             $data['status'] = $this->session->userdata('status');
-            $data['image'] = $this->session->userdata('image');
+            $data['userImage'] = $this->session->userdata('userImage');
             $data['products'] = $this->product_model->getProducts();
             $data['message'] = $this->session->flashdata('message');
             $data['cart'] = $this->cart_model->getCart($userId);
+            $data['filteredcart'] = $this->cart_model->getFilteredCart($userId);
+            $data['receipts'] = $processingReceipts;
+            // echo var_dump($this->cart_model->getFilteredCart($userId));
+            $this->session->set_userdata('prevUrl', $_SERVER['REQUEST_URI']);
             $this->call->view($to, $data);
         }
     }

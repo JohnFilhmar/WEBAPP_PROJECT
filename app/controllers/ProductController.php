@@ -11,16 +11,18 @@ class ProductController extends Controller {
 
 	public function inventory() 
     {
-        if ($this->session->userdata('isLoggedIn')) {
-            $data['username'] = $this->session->userdata('username');
-            $data['email'] = $this->session->userdata('email');
-            $data['image'] = $this->session->userdata('image');
+        if ($this->session->userdata('isLoggedIn') && $this->session->userdata('role') == 'ADMIN' || $this->session->userdata('role') == 'CLERK') {
+            $userId = $this->session->userdata('userId');
+            $data['userName'] = $this->session->userdata('userName');
+            $data['userEmail'] = $this->session->userdata('userEmail');
+            $data['userImage'] = $this->session->userdata('userImage');
             $data['role'] = $this->session->userdata('role');
             $data['status'] = $this->session->userdata('status');
             $data['products'] = $this->product_model->getProducts();
             $data['toedit'] = $this->session->userdata('editItem');
             $data['message'] = $this->session->userdata('message');
-            $data['cart'] = $this->cart_model->getCart($this->session->userdata('userId'));
+            $data['cart'] = $this->cart_model->getCart($userId);
+            $data['filteredcart'] = $this->cart_model->getFilteredCart($userId);
             $this->call->view('inventory',$data);
         } else {
             redirect('/');
@@ -54,10 +56,6 @@ class ProductController extends Controller {
             $this->session->set_flashdata('message', 'Item Added!');
             redirect('/inventory');
 		} else {
-            $data['username'] = $this->session->userdata('username');
-            $data['email'] = $this->session->userdata('email');
-            $data['image'] = $this->session->userdata('image');
-            $data['products'] = $this->product_model->getProducts();
             $this->session->set_flashdata('message' , $this->upload->get_errors());
             redirect('/inventory');
 		}
@@ -97,7 +95,6 @@ class ProductController extends Controller {
         $localFilePath = FCPATH . '../../public/uploads/items/' . $image;
         if (file_exists($localFilePath)) {
             if (unlink($localFilePath)) {
-                echo "File deleted: $localFilePath<br>";
                 $this->call->library('upload', $_FILES["image"]);
                 $this->upload->set_dir('public/uploads/items');
                 if ($this->upload->do_upload()) {

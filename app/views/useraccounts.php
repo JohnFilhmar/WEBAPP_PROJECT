@@ -1,9 +1,7 @@
 <?php
     include 'template/header.php';
 ?>
-    <div class="p-4 container mx-auto">
-        
-    <div class="rounded-lg bg-gray-200 container mx-auto">
+    <div class="rounded-lg container mx-auto h-screen max-h-screen overflow-y-auto">
             <p class="text-2xl font-bold p-5 m-5">User Accounts</p>
             <div class="relative overflow-x-auto shadow-md text-center">
                 <table class="w-full text-sm rtl:text-right text-gray-500 dark:text-gray-400">
