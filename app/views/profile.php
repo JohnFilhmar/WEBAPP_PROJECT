@@ -39,7 +39,7 @@
                                                     </h5>
                                                     <p class="mb-3 font-semibold text-gray-700 dark:text-gray-400">
                                                     Compatibility :  <?= (isset($c['id']))? $c['compatibility'] : "" ?><br/>
-                                                    x1<br/>
+                                                    x  <?= (isset($c['id']))? $c['quantity'] : "" ?><br/>
                                                     </p>
                                                 </div>
                                                 <div class="p-3 my-auto basis-1/2 flex ">

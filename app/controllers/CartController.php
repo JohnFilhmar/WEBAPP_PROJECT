@@ -10,8 +10,6 @@ class CartController extends Controller {
             $newcart = array_filter($oldcart, function ($cart) {
                 return $cart['receipt_number'] === null;
             });
-            // echo var_dump($oldcart);
-            // echo var_dump($newcart);
             if(!$newcart){
                 $bind = array(
                     'item_id' => $id,

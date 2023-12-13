@@ -11,7 +11,6 @@ class UserController extends Controller {
     }
 
     public function baseHome() {
-        $userId = $this->session->userdata('userId');
         $data['userName'] = $this->session->userdata('userName');
         $data['userEmail'] = $this->session->userdata('userEmail');
         $data['role'] = 'NOLOGIN';
@@ -74,26 +73,31 @@ class UserController extends Controller {
         $password = $this->io->post('password');
     
         $user = $this->user_model->getUserByUsername($username);
-        if($user['status'] == 'UP'){
-            if ($user && password_verify($password, $user['password'])) {
-                $sesData = array(
-                    'userId' => $user['id'],
-                    'userName' => $username,
-                    'userImage' => $user['image'],
-                    'userEmail' => $user['email'],
-                    'role' => $user['role'],
-                    'status' => $user['status'],
-                    'isLoggedIn' => true
-                );
-                $this->session->set_userdata($sesData);
-                $this->session->set_flashdata('message', "Logged In Successfully!");
-                redirect('/home');
+        if($user != null){
+            if($user['status'] == 'UP'){
+                if ($user && password_verify($password, $user['password'])) {
+                    $sesData = array(
+                        'userId' => $user['id'],
+                        'userName' => $username,
+                        'userImage' => $user['image'],
+                        'userEmail' => $user['email'],
+                        'role' => $user['role'],
+                        'status' => $user['status'],
+                        'isLoggedIn' => true
+                    );
+                    $this->session->set_userdata($sesData);
+                    $this->session->set_flashdata('message', "Logged In Successfully!");
+                    redirect('/home');
+                } else {
+                    $this->session->set_flashdata('fail', "Username or Password not found!");
+                    redirect('/login');
+                }
             } else {
-                $this->session->set_flashdata('fail', "Username or Password not found!");
+                $this->session->set_flashdata('fail', "Your account is down. Contact an Administrator!");
                 redirect('/login');
             }
         } else {
-            $this->session->set_flashdata('fail', "Your account is down. Contact an Administrator!");
+            $this->session->set_flashdata('fail', "Username or password does not exist!");
             redirect('/login');
         }
     }
@@ -117,28 +121,30 @@ class UserController extends Controller {
     }
 
     public function profileEdit($id) {
-        if (empty($this->user['image'])) {
-            $localFilePath = FCPATH . '../../public/uploads/items/' . $this->user['image'];
+        if (!empty($this->user['image'])) {
+            $localFilePath = FCPATH . '..\\..\\public\\uploads\\users\\' . $this->user['image'];
             if (file_exists($localFilePath)) {
-                if(unlink($localFilePath)){
+                if (unlink($localFilePath)) {
                     $this->updateUserFields($id);
+                } else {
+                    $this->session->set_flashdata('message', 'Error deleting file! (unlink failed)');
+                    redirect('/profile');
                 }
             } else {
-                $this->session->set_flashdata('message', 'Error deleting file!');
+                $this->session->set_flashdata('message', 'File does not exist! (' . $localFilePath . ')');
                 redirect('/profile');
             }
         } else {
             $this->updateUserFields($id);
         }
-    }    
+    }
+     
 
     private function updateUserFields($id)
     {
         $this->call->library('upload', $_FILES["avatar"]);
         $this->upload
             ->set_dir('public/uploads/users')
-            ->allowed_extensions(array('jpg'))
-            ->allowed_mimes(array('image/jpeg'))
             ->is_image();
     
         if ($this->upload->do_upload()) {
@@ -170,7 +176,7 @@ class UserController extends Controller {
             $userId = $this->session->userdata('userId');
     
             $data['userId'] = $this->session->userdata('userId');
-            $data['username'] = $this->session->userdata('username');
+            $data['userName'] = $this->session->userdata('userName');
             $data['userEmail'] = $this->session->userdata('userEmail');
             $data['role'] = $this->session->userdata('role');
             $data['status'] = $this->session->userdata('status');

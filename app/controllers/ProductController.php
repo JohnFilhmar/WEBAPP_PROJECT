@@ -34,8 +34,6 @@ class ProductController extends Controller {
         $this->call->library('upload', $_FILES["image"]);
 		$this->upload
 			->set_dir('public/uploads/items')
-			->allowed_extensions(array('jpg'))
-			->allowed_mimes(array('image/jpeg'))
 			->is_image();
 		if($this->upload->do_upload()) {
 			$image = $this->upload->get_filename();
@@ -56,7 +54,7 @@ class ProductController extends Controller {
             $this->session->set_flashdata('message', 'Item Added!');
             redirect('/inventory');
 		} else {
-            $this->session->set_flashdata('message' , $this->upload->get_errors());
+            $this->session->set_flashdata('message' , 'Something have gone wrong!');
             redirect('/inventory');
 		}
     }
